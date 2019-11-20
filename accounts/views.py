@@ -10,19 +10,34 @@ def signup(request):
         return redirect('movies:index')
 
     if request.method == "POST":
-        pass
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('accounts:login')
     else:
         form = UserCreationForm()
     context={
         'form':form
     }
-    
+    return render(request,'accounts/forms.html',context)
 
 def login(request):
-    pass
+    if request.user.is_authenticated:
+        return redirect('movies:index')
+
+    if request.method == "POST":
+        form = AuthenticationForm(request,request.POST)
+        if form.is_valid():
+            auth_login(request, form.get_user())
+            return redirect('movies:index')
+    else:
+        form = AuthenticationForm()
+    context={
+        'form':form
+    }
+    return render(request,'accounts/forms.html',context)
 
 def logout(request):
-    pass
+    auth_logout(request)
+    return redirect('movies:index')
 
-def userlist(request):
-    pass
